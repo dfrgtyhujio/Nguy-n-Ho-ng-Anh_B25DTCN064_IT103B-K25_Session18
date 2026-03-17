@@ -3,11 +3,11 @@ let contacts = [
         name: "Nguyễn Văn An",
         phone: "0901234567",
         email: "nguyenvanan@email.com"
-    }  
+    }
 ];
 
 function renderContacts() {
-    let str = ""
+    let str = "";
     for (let i = 0; i < contacts.length; i++) {
         str += `<tr>
                 <td>${i + 1}</td>
@@ -15,70 +15,80 @@ function renderContacts() {
                 <td>${contacts[i].phone}</td>
                 <td>${contacts[i].email}</td>
                 <td>
-                  <div class="action-buttons">
-                    <button class="btn-edit" >Sửa</button>
-                    <button class="btn-delete" onclick="deleteContact(${i})">Xóa</button>
-                  </div>
+                    <div class="action-buttons">
+                        <button class="btn-edit" onclick="editContact(${i})">Sửa</button>
+                        <button class="btn-delete" onclick="deleteContact(${i})">Xóa</button>
+                    </div>
                 </td>
-              </tr>`
+            </tr>`;
     }
     document.getElementById("contact-tbody").innerHTML = str;
 }
 renderContacts();
 
+
 function addContact() {
-    let inputName = document.getElementById("contact-name")
-    if (inputName.value.trim() === "") {
+    let inputName = document.getElementById("contact-name").value.trim();
+    let inputPhone = document.getElementById("contact-phone").value.trim();
+    let inputEmail = document.getElementById("contact-email").value.trim();
+
+
+    if (inputName === "") {
         alert("Họ tên không được để trống!");
         return;
     }
-    if (inputName.value.length < 2) {
+
+    if (inputName.length < 2) {
         alert("Họ tên phải có ít nhất 2 ký tự!");
         return;
     }
 
-    let inputPhone = document.getElementById("contact-phone")
-    if (inputPhone.value.trim() === "") {
+    if (inputPhone === "") {
         alert("Số điện thoại không được để trống!");
         return;
     }
-    if (inputPhone.value.length < 10 || !inputPhone.value.startsWith("0") && !inputPhone.value.startsWith("+84")) {
-        alert("Số điện thoại không hợp lệ! Vui lòng nhập số điện thoại 10 chữ số (bắt đầubằng 0) hoặc định dạng quốc tế (+84...)");
+
+    if (inputPhone.length < 10 || (!inputPhone.startsWith("0") && !inputPhone.startsWith("+84"))) {
+        alert("Số điện thoại không hợp lệ! Vui lòng nhập số điện thoại 10 chữ số (bắt đầu bằng 0) hoặc định dạng quốc tế (+84...)");
         return;
     }
-    
 
-    let inputEmail = document.getElementById("contact-email")
-    if (inputEmail.value.trim() === "") {
+    if (isNaN(inputPhone)) {
+        alert("Số điện thoại phải là số");
+        return;
+    }
+
+    if (inputEmail === "") {
         alert("Email không được để trống!");
         return;
     }
-    if (!inputEmail.value.includes("@")) {
+
+    if (!inputEmail.includes("@") || !inputEmail.includes(".")) {
         alert("Email không hợp lệ!");
         return;
     }
-    for (let index = 0; index < contacts.length; index++) {
-        if (contacts[index].email === inputEmail.value) {
+
+    for (let i = 0; i < contacts.length; i++) {
+        if (contacts[i].email === inputEmail) {
             alert("Email đã tồn tại trong danh bạ!");
             return;
         }
     }
-
     let newContact = {
-        name: inputName.value,
-        phone: inputPhone.value,
-        email: inputEmail.value
+        name: inputName,
+        phone: inputPhone,
+        email: inputEmail
     };
-
     contacts.push(newContact);
     renderContacts();
-    inputName.value = "";
-    inputPhone.value = "";
-    inputEmail.value = "";
-
 }
 
+
+
 function deleteContact(index) {
-    contacts.splice(index, 1);
-    renderContacts();
+    let confirmDelete = confirm("Bạn có chắc muốn xóa?");
+    if (confirmDelete) {
+        contacts.splice(index, 1);
+        renderContacts();
+    }
 }
